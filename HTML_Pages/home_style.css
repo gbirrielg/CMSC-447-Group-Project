@@ -1,0 +1,68 @@
+.home-smallBtns {
+    display: flex;
+    flex-direction: column;
+}
+
+.home-smallBtns button:first-child {
+    align-self: flex-end;
+    width: 10%;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.home-smallBtns button:not(:first-child) {
+    align-self: flex-end;
+    width: 10%;
+    margin-bottom: 5px;
+}
+
+.home-largeBtns {
+    display: flex;
+    flex-direction: column;
+}
+
+.home-largeBtns button:first-child {
+    align-self: center;
+    width: 30%;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.home-largeBtns button:not(:first-child) {
+    align-self: center;
+    width: 30%;
+    margin-bottom: 10px;
+}
+
+.baseButton {
+    background-color: #f55e61;
+    border: none;
+    color: white;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 12px;
+}
+
+.smallButton {
+    padding: 15px 10px;
+    font-size: 18px;
+}
+
+.largeButton {
+    font-size: 45px;
+    padding: 30px 15px;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+.homeA {
+    text-decoration: none;
+    color: white;
+}
+
+h1 {
+    text-align: center;
+    font-size: 60px;
+}
