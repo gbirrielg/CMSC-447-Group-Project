@@ -1,0 +1,46 @@
+.baseButton {
+    background-color: #f55e61;
+    border: none;
+    color: white;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 12px;
+}
+
+.smallButton {
+    padding: 15px 10px;
+    font-size: 18px;
+}
+
+.largeButton {
+    font-size: 45px;
+    padding: 30px 15px;
+}
+
+button:hover {
+    opacity: 80%;
+}
+
+.grouping {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 60px;
+}
+
+.box {
+    flex: 1;
+    max-width: 30%;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.blankText {
+    text-decoration: none;
+    color: white;
+}
+
+h1 {
+    text-align: center;
+    font-size: 60px;
+}
