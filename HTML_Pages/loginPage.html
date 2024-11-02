@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <link rel="stylesheet" href="cardPage.css">
         <title>Login Page</title>
-
         <style>
-            body {font-family: Arial, Helvetica, sans-serif;}
-
             input[type=text], input[type=password] {
             width: 50%;
             padding: 12px 20px;
@@ -14,38 +12,24 @@
             border: 1px solid #ccc;
             box-sizing: border-box;
             }
-
-            button {
-                background-color: #04AA6D;
-                color: white;
-                padding: 14px 20px;
-                margin: 8px 0;
-                border: none;
-                cursor: pointer;
-                width: 30%;
-                font-size: 20px;
-              }
-              
-              button:hover {
-                opacity: 0.8;
-              }
         </style>
 
     </head>
     <body>
-        <section style="text-align: center;">
-            <h1>Log in</h1>
-            <h2>Please enter your username and password below:</h2>
-            <form>
-                <label>Username</label>
-                <input type="text" placeholder="Enter Username" name="uname" required> <br>
+            <h1 style="text-align: center;font-size: 40px;margin-top: 100px;">Please enter your username and password below</h1>
+            <div class="card" style="padding-bottom: 20px;padding-left: 15px;padding-right: 15px;">
+                <form>
+                    <p style="margin-bottom: 5px;font-size: 20px;">Username</p>
+                    <input type="text" placeholder="Enter Username" name="uname" id="uname" required style="margin-top: 0px;width: 100%;border-radius: 4px;"> <br>
 
-                <label>Password</label>
-                <input type="password" placeholder="Enter Password" name="pswd" required> <br>
+                    <p style="margin-bottom: 5px;font-size: 20px;">Password</p>
+                    <input type="password" placeholder="Enter Password" name="pswd" id="pswd" required style="margin-top: 0px;width: 100%;border-radius: 4px;"> <br>
 
-                <a href="signupPage.html"><button type="button">Sign Up Here</button></a>
-                <button type="submit">Login</button>
-            </form>
-        </section>
+                    <input type="submit" value="Login" style="padding: 10px;width: 100%;margin-top: 15px;margin-bottom: 20px;" class="baseButton">
+                </form>
+
+                <a href="signupPage.html" style="color: black;">Create Account?</a><br>
+
+            </div>
     </body>
 </html>
