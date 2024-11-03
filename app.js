@@ -1,8 +1,9 @@
 import express from 'express'
 import { getUser, getUsers, getSpecificCards, getTypeCards, getThemeCards } from './database.js'
-import e from 'express'
+import cors from 'cors'
 
 const app = express()
+app.use(cors())
 app.use(express.json())
 
 
@@ -27,6 +28,11 @@ app.get("/cards/:specify", async (req, res) => {
         res.send(cards)
     }
 })
+
+// app.get("/cards/:type/:theme", async (req, res) => {
+//     const type = req.params.type
+//     const theme = req.params.theme
+// })
 
 app.use((err, req, res, next) => {
     console.error(err.stack)

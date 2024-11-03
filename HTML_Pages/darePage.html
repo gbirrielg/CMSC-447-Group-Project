@@ -12,22 +12,51 @@
 
         <div class="card">
             <div class="paragraph">
-                <p><i>Card ID</i></p>
-                <p><i>Username</i></p>
+                <p id="cardid"><i>Card ID</i></p>
+                <p id="username"><i>Username</i></p>
             </div>
 
             <div class="content">
                 <h1>Dare</h1>
-                <p class="genre"><i>Genre</i></p>
-                <p class="main">Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate, molestiae tempore debitis quaerat quod voluptatum accusantium maiores delectus placeat.</p>
+                <p id="genre" class="genre"><i>Genre</i></p>
+                <p id="option1" class="main">Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate, molestiae tempore debitis quaerat quod voluptatum accusantium maiores delectus placeat.</p>
             </div>
 
             <div class="feedback">
                 <button><p style="color: green;">&#8593</p></button>
                 <button><p style="color: red">&#8595</p></button>
-                <p style="font-size: 30px;">123</p>
-                <p style="font-size: 30px;">456</p>
+                <p id="upvote" style="font-size: 30px;">123</p>
+                <p id="downvote" style="font-size: 30px;">456</p>
             </div>
+
+            <script>
+                //Calling func to retrieve cards
+                async function fetchCards(specifyParam) {
+                    try {
+                        const response = await fetch(`http://localhost:8080/cards/${specifyParam}`);
+                        const data = await response.json();
+                        const firstCard = data[0];
+                        console.log(firstCard);
+
+                        document.getElementById('option1').textContent = `${firstCard.option_1}`;
+                        document.getElementById('genre').textContent = `${firstCard.theme}`;
+                        document.getElementById('cardid').textContent = `${firstCard.card_id}`;
+                        document.getElementById('username').textContent = `${firstCard.username}`;
+                        document.getElementById('genre').textContent = `${firstCard.theme}`;
+                        document.getElementById('upvote').textContent = `${firstCard.upvotes}`;
+                        document.getElementById('downvote').textContent = `${firstCard.downvotes}`;
+
+                        console.log('Successfully fetched');
+                    }
+                    catch (error) {
+                        console.error('Error fetching cards: ', error);
+                    }
+                }
+
+                document.addEventListener('DOMContentLoaded', () => {
+                    fetchCards('DAR');
+                })
+            </script>
         </div>
 
         <div class="mainButtons">
