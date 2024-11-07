@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="cardPage.css">
+        <title>Create Card</title>
+    </head>
+
+    <body>
+        <div class="buttonGroup">
+            <button class="smallButton baseButton"><a href="adminHome.html" class="blankText">Home</a></button>
+        </div>
+
+        <h1 style="text-align: center;font-size: 50px;">Create a Card</h1>
+
+        <div class="card">
+            <p style="opacity: 70%;">Fill out the fields below to create a card.</p>
+
+            <form action="thanks.html">
+                <label style="font-size: 20px;">Select the Card Type:</label>
+                <br>
+                <select id="game" name="game" onchange="changeDisplay()" required class="selector">
+                    <option value="default">Select the Card Type</option>
+                    <option value="truth">Truth</option>
+                    <option value="dare">Dare</option>
+                    <option value="wyr">Would You Rather</option>
+                </select>
+                
+                <br>
+
+                <label style="font-size: 20px;">Genre</label>
+                <br>
+                <select id="genre" name="genre" required class="selector">
+                    <option value="basic">Basic</option>
+                    <option value="embarassing">Embarassing</option>
+                    <option value="personal">Personal</option>
+                    <option value="food">Food</option>
+                </select>
+
+                <div id="td" style="display: none;">
+                    <label style="font-size: 20px;">Card Text</label><br>
+                    <textarea name="cardText" id="text" rows="5" cols="50"></textarea>
+                </div>
+
+                <div id="wyr" style="display: none;">
+                    <label style="font-size: 20px;">Option 1</label><br>
+                    <textarea name="opt1" id="text" rows="5" cols="50" style="margin-bottom: 10px;"></textarea><br>
+                    <label style="font-size: 20px;">Option 2</label><br>
+                    <textarea name="opt2" id="text" rows="5" cols="50"></textarea>
+                </div>
+
+                <div id="default" style="display: block;">
+                    <p style="color: red;font-size: 20px;"><b>Please select a card type.</b></p>
+                </div>
+
+                <!-- I don't know how we're going to get the username as well in the submission. -->
+
+                <input type="submit" id="submit" value="Submit Card" class="baseButton" style="width: 40%; margin-top: 10px; margin-bottom: 15px; display: none;">
+
+                <script>
+                    const dropdown = document.getElementById('game');
+                    const tdDiv = document.getElementById("td");
+                    const wyrDiv = document.getElementById("wyr");
+                    const defaultDiv = document.getElementById("default");
+                    const subButton = document.getElementById("submit");
+
+                    dropdown.addEventListener('change', function (event){
+
+                        if(event.target.value === 'wyr'){
+                            tdDiv.style.display = 'none';
+                            defaultDiv.style.display = 'none';
+                            wyrDiv.style.display = 'block';
+                            subButton.style.display = 'block';
+                        }
+                        else if(event.target.value == 'truth' || event.target.value === 'dare'){
+                            wyrDiv.style.display = 'none';
+                            defaultDiv.style.display = 'none';
+                            tdDiv.style.display = 'block';
+                            subButton.style.display = 'block';
+                        }
+                        else{
+                            wyrDiv.style.display = 'none';
+                            tdDiv.style.display = 'none';
+                            subButton.style.display = 'none';
+                            defaultDiv.style.display = 'block';
+                        }
+                    });
+                </script>
+
+            </form>
+        </div>
+
+    </body>
+</html>
