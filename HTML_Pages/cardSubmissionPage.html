@@ -54,11 +54,16 @@
                     <p style="color: red;font-size: 20px;"><b>Please select a card type.</b></p>
                 </div>
 
+                <!-- I don't know how we're going to get the username as well in the submission. -->
+
+                <input type="submit" id="submit" value="Submit Card" class="baseButton" style="width: 40%; margin-top: 10px; margin-bottom: 15px; display: none;">
+
                 <script>
                     const dropdown = document.getElementById('game');
                     const tdDiv = document.getElementById("td");
                     const wyrDiv = document.getElementById("wyr");
                     const defaultDiv = document.getElementById("default");
+                    const subButton = document.getElementById("submit");
 
                     dropdown.addEventListener('change', function (event){
 
@@ -66,23 +71,22 @@
                             tdDiv.style.display = 'none';
                             defaultDiv.style.display = 'none';
                             wyrDiv.style.display = 'block';
+                            subButton.style.display = 'block';
                         }
                         else if(event.target.value == 'truth' || event.target.value === 'dare'){
                             wyrDiv.style.display = 'none';
                             defaultDiv.style.display = 'none';
                             tdDiv.style.display = 'block';
+                            subButton.style.display = 'block';
                         }
                         else{
                             wyrDiv.style.display = 'none';
                             tdDiv.style.display = 'none';
+                            subButton.style.display = 'none';
                             defaultDiv.style.display = 'block';
                         }
                     });
                 </script>
-
-                <!-- I don't know how we're going to get the username as well in the submission. -->
-
-                <input type="submit" value="Submit Card" class="baseButton" style="width: 40%; margin-top: 10px; margin-bottom: 15px;">
 
             </form>
         </div>
