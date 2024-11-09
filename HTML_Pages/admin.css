@@ -35,6 +35,11 @@ button:hover {
     text-decoration: none;
 }
 
+.blankTextWhite {
+    color: white;
+    text-decoration: none;
+}
+
 .card {
     max-width: 20%;
     margin: 0 auto;
