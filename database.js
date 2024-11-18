@@ -60,6 +60,48 @@ export async function getSpecificCards(type, theme){
     return result
 }
 
+
+export async function checkUserLogin(username, password){
+    const [result] = await pool.query(`
+        SELECT *
+        FROM users
+        WHERE username = ? AND password = ?
+        `, [username, password])
+    return result
+}
+
+
+export async function createUser(username, password){
+    try{
+        const insertion = await pool.query(`
+            INSERT INTO users (username, password)
+            VALUES (?, ?)
+            `, [username, password])
+        console.log("User not found, proceeding with registration.")
+        return insertion
+    } catch (error){
+        console.log("user found, aborting registration request.")
+        return null;
+    }
+
+    // except DatabaseError as e:
+    // const result = await pool.query(`
+    //     SELECT * FROM users
+    //     WHERE username = ?
+    //     `, [username])
+    
+    // if (result.length == 0){
+    //     return result
+    // }
+
+    // const insertion = await pool.query(`
+    //     INSERT INTO users (username, password)
+    //     VALUES (?, ?)
+    //     `, [username, password])
+    // return insertion
+}
+
+
 // const clients = await getUsers()
 // console.log(clients)
 // const specific = await getUser('admin')

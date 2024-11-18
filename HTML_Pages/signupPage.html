@@ -26,7 +26,29 @@
                 <p style="margin-bottom: 5px;font-size: 20px;">Password</p>
                 <input type="password" placeholder="Enter Password" name="pswd" id="pswd" required style="margin-top: 0px;width: 100%;border-radius: 4px;"> <br>
 
-                <input type="submit" value="Sign Up" style="padding: 10px;width: 100%;margin-top: 15px;margin-bottom: 20px;" class="baseButton">
+                <!-- <input type="submit" value="Sign Up" style="padding: 10px;width: 100%;margin-top: 15px;margin-bottom: 20px;" class="baseButton"> -->
+                <button style="padding: 10px;width: 100%;margin-top: 15px;margin-bottom: 20px;" type="button" class="baseButton" onclick="insertUser()">Sign Up</button>
+                
+                <script>
+                    async function insertUser() {
+                        const response = await fetch(`http://localhost:8080/users/`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                "username": document.getElementById('uname').value,
+                                "password": document.getElementById('pswd').value
+                            })
+                        })
+
+                        if (response.ok){
+                            alert("Successfully created account!")
+                        } else {
+                            alert("Registration failed. A user by this username already exists!")
+                        }
+                    }
+                </script>
             </form>
         </div>
     </body>
