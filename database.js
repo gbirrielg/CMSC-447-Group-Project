@@ -12,10 +12,12 @@ const pool = mysql.createPool({
     queueLimit: 0
 }).promise()
 
+
 export async function getUsers() {
     const [result] = await pool.query(`SELECT * FROM users`)
     return result
 }
+
 
 export async function getUser(id){
     const [result] = await pool.query(`
@@ -25,6 +27,35 @@ export async function getUser(id){
         `, [id])
     return result[0];
 }
+
+
+export async function getRandSubmission(){
+    const [result] = await pool.query(`
+        SELECT *
+        FROM submissions
+        LIMIT 1`)
+    return result[0];
+}
+
+
+export async function deleteSubmission(){
+    const [result] = await pool.query(`
+        DELETE FROM submissions
+        ORDER BY submit_id ASC
+        LIMIT 1`)
+    return result;
+}
+
+
+// export async function getCardById(id){
+//     const [result] = await pool.query(`
+//         SELECT *
+//         FROM cards
+//         WHERE card_id = ?
+//         `, [id])
+//     return result[0];
+// }
+
 
 export async function getTypeCards(type){
     const [result] = await pool.query(`
@@ -36,6 +67,7 @@ export async function getTypeCards(type){
         , [type])
     return result
 }
+
 
 export async function getThemeCards(theme){
     const [result] = await pool.query(`
@@ -61,6 +93,30 @@ export async function getSpecificCards(type, theme){
 }
 
 
+export async function getAnyCards(){
+    const [result] = await pool.query(`
+        SELECT * FROM cards
+        ORDER BY RAND() LIMIT 10`)
+    return result;
+}
+
+
+export async function deleteCard(id){
+    try{
+        const [result] = await pool.query(`
+            DELETE FROM cards
+            WHERE card_id = ?
+            `, [id])
+        console.log("Successfully deleted card.")
+        return result;
+    } catch {
+        console.log("Unsuccessfully deleted card.")
+        return null;
+    }
+
+}
+
+
 export async function checkUserLogin(username, password){
     const [result] = await pool.query(`
         SELECT *
@@ -83,6 +139,37 @@ export async function createUser(username, password){
         console.log("user found, aborting registration request.")
         return null;
     }
+}
+    
+
+export async function createCardAdmin(type, theme, text1, text2){
+    try{
+        const insertion = await pool.query(`
+            INSERT INTO cards (username, type, theme, option_1, option_2, date_time)
+            VALUES ("admin", ?, ?, ?, ?, CURDATE())
+            `, [type, theme, text1, text2] )
+        console.log("Successfully inserted admin-created card.")
+        return insertion;
+    } catch (error){
+        console.log("Unsuccessful card entry.")
+        return null;
+    }
+}
+
+
+export async function createCardUser(type, theme, text1, text2){
+    try{
+        const insertion = await pool.query(`
+            INSERT INTO submissions (username, type, theme, option_1, option_2)
+            VALUES ("testuser", ?, ?, ?, ?)
+            `, [type, theme, text1, text2] )
+        console.log("Successfully inserted user-suggested card.")
+        return insertion;
+    } catch {
+        console.log("Unsuccessful card suggestion entry.")
+        return null;
+    }
+}
 
     // except DatabaseError as e:
     // const result = await pool.query(`
@@ -99,7 +186,7 @@ export async function createUser(username, password){
     //     VALUES (?, ?)
     //     `, [username, password])
     // return insertion
-}
+
 
 
 // const clients = await getUsers()

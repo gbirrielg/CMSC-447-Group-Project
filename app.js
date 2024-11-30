@@ -1,5 +1,5 @@
 import express from 'express'
-import { getUser, getUsers, checkUserLogin, getTypeCards, getThemeCards, createUser } from './database.js'
+import { getUser, getUsers, checkUserLogin, getRandSubmission, deleteSubmission, getTypeCards, getThemeCards, getAnyCards, deleteCard, createUser, createCardAdmin, createCardUser } from './database.js'
 import cors from 'cors'
 
 const app = express()
@@ -27,6 +27,18 @@ app.get("/users/:name/:pass", async (req, res) => {
     res.send(user)
 })
 
+
+app.get("/submissions", async (req, res) => {
+    const card = await getRandSubmission()
+    res.send(card)
+})
+
+app.delete("/submissions", async (req, res) => {
+    const response = await deleteSubmission()
+    res.send(response)
+})
+
+
 // This API call is used to retrieve a card of a specific type or theme.
 app.get("/cards/:specify", async (req, res) => {
     const arg = req.params.specify
@@ -40,6 +52,32 @@ app.get("/cards/:specify", async (req, res) => {
 })
 
 
+app.get("/cards", async (req, res) => {
+    const cards = await getAnyCards()
+    res.send(cards)
+})
+
+
+// Use for updating card.
+// app.get("/cards/get/:id", async (req, res) => {
+//     const arg = req.params.id
+//     const card = await getCardById(Number(arg))
+//     if (result){
+//         res.status(20)
+//     }
+// })
+
+
+app.delete("/cards/:id", async (req, res) => {
+    const arg = req.params.id
+    const result = await deleteCard(Number(arg))
+    if (result){
+        res.status(201).send(result)
+    } else {
+        res.status(404).send(result)
+    }
+})
+
 app.post("/users", async (req, res) => {
     const { username, password } = req.body
     const user = await createUser(username, password)
@@ -47,6 +85,28 @@ app.post("/users", async (req, res) => {
         res.status(201).send(user)
     } else {
         res.status(409).send(user)
+    }
+})
+
+
+app.post("/users/cards", async (req, res) => {
+    const { type, theme, text1, text2 } = req.body
+    const card = await createCardUser(type, theme, text1, text2)
+    if (card){
+        res.status(200).send(card)
+    } else {
+        res.status(500).send(card)
+    }
+})
+
+
+app.post("/admin", async (req, res) => {
+    const { type, theme, text1, text2 } = req.body
+    const card = await createCardAdmin(type, theme, text1, text2)
+    if (card){
+        res.status(201).send(card)
+    } else {
+        res.status(500).send(card)
     }
 })
 

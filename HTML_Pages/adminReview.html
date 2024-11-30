@@ -18,17 +18,17 @@
         <div id="submission" style="display: block;">
             <div class="card">
                 <div class="paragraph">
-                    <p><i>Card ID</i></p>
-                    <p><i>Username</i></p>
+                    <p id="cardid"><i>Card ID</i></p>
+                    <p id="username"><i>Username</i></p>
                 </div>
 
                 <div class="content">
-                    <h1>Card Type</h1>
-                    <p class="genre"><i>Genre</i></p>
+                    <h1 id="type">Card Type</h1>
+                    <p id="genre" class="genre"><i>Genre</i></p>
                     <div id="wyr" style="display: block;">
-                        <p class="main">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                        <p id="option1" class="main">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
                         <p class="main" style="margin-top: 4px;font-size: 28px;"><b>OR</b></p>
-                        <p class="main" style="margin-top: 4px;">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                        <p id="option2" class="main" style="margin-top: 4px;">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
                     </div>
 
                     <div id="td" style="display: none;">
@@ -45,9 +45,74 @@
             </div>
 
             <div class="mainButtons">
-                <button class="baseButton largeButton" style="margin-right: 10px;" onclick=""><a href="adminReview.html" class="blankText">Approve</a></button>
-                <button class="baseButton largeButton" onclick=""><a href="adminReview.html" class="blankText">Deny</a></button>
+                <button class="baseButton largeButton" style="margin-right: 10px;" onclick="approveSubmission()"><a href="adminReview.html" class="blankText">Approve</a></button>
+                <button class="baseButton largeButton" onclick="denySubmission()"><a href="adminReview.html" class="blankText">Deny</a></button>
             </div>
+
+            <script>
+                async function getSubmission(){
+                   const response = await fetch(`http://localhost:8080/submissions/`);
+                   const data = await response.json()
+                   
+                   document.getElementById('cardid').textContent = `${data.submit_id}`
+                   document.getElementById('username').textContent = `${data.username}`
+                   document.getElementById('type').textContent = `${data.type}`
+                   document.getElementById('genre').textContent = `${data.theme}`
+                   document.getElementById('option1').textContent = `${data.option_1}`
+                   if (data.option_2){
+                    document.getElementById('option2').textContent = `${data.option_2}`
+                   } else {
+                    document.getElementById('option2').textContent = `N/A`
+                   }
+                   return data;
+                }
+
+                async function getCard(){
+                    const response = await fetch(`http://localhost:8080/submissions/`);
+                    const data = await response.json()
+                    return data;
+                }
+
+                getSubmission();
+            </script>
+
+            <script>
+                async function denySubmission(){
+                    const response = await fetch(`http://localhost:8080/submissions/`, {
+                        method: 'DELETE'
+                    }
+                    )
+                }
+
+                async function approveSubmission(){
+                    const card = await getCard();
+                    let opt2 = null;
+                    if (card.option_2){
+                        opt2 = card.option_2;
+                    }
+
+                    const response = await fetch('http://localhost:8080/admin/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            "type": card.type,
+                            "theme": card.theme,
+                            "text1": card.option_1,
+                            "text2": opt2
+                        })
+                    })
+                    if (response.ok){
+                        alert("Successfully created card!")
+                    } else {
+                        alert("Card creation failed.")
+                    }
+
+                    await denySubmission();
+                    window.location.href = 'adminReview.html'
+                }
+            </script>
         </div>
 
     </body>

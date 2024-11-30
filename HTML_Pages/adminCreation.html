@@ -15,14 +15,15 @@
         <div class="card">
             <p style="opacity: 70%;">Fill out the fields below to create a card.</p>
 
-            <form action="adminThanks.html">
+            <!-- action="adminThanks.html"-->
+            <form>
                 <label style="font-size: 20px;">Select the Card Type:</label>
                 <br>
-                <select id="game" name="game" onchange="changeDisplay()" required class="selector">
+                <select id="game" name="game" required class="selector">
                     <option value="default">Select the Card Type</option>
-                    <option value="truth">Truth</option>
-                    <option value="dare">Dare</option>
-                    <option value="wyr">Would You Rather</option>
+                    <option value="TRU">Truth</option>
+                    <option value="DAR">Dare</option>
+                    <option value="WYR">Would You Rather</option>
                 </select>
                 
                 <br>
@@ -30,10 +31,10 @@
                 <label style="font-size: 20px;">Genre</label>
                 <br>
                 <select id="genre" name="genre" required class="selector">
-                    <option value="basic">Basic</option>
-                    <option value="embarassing">Embarassing</option>
-                    <option value="personal">Personal</option>
-                    <option value="food">Food</option>
+                    <option value="Basic">Basic</option>
+                    <option value="Embarassing">Embarassing</option>
+                    <option value="Personal">Personal</option>
+                    <option value="Food">Food</option>
                 </select>
 
                 <div id="td" style="display: none;">
@@ -43,9 +44,9 @@
 
                 <div id="wyr" style="display: none;">
                     <label style="font-size: 20px;">Option 1</label><br>
-                    <textarea name="opt1" id="text" rows="5" cols="50" style="margin-bottom: 10px;"></textarea><br>
+                    <textarea name="opt1" id="text1" rows="5" cols="50" style="margin-bottom: 10px;"></textarea><br>
                     <label style="font-size: 20px;">Option 2</label><br>
-                    <textarea name="opt2" id="text" rows="5" cols="50"></textarea>
+                    <textarea name="opt2" id="text2" rows="5" cols="50"></textarea>
                 </div>
 
                 <div id="default" style="display: block;">
@@ -54,7 +55,7 @@
 
                 <!-- I don't know how we're going to get the username as well in the submission. -->
 
-                <input type="submit" id="submit" value="Submit Card" class="baseButton" style="width: 40%; margin-top: 10px; margin-bottom: 15px; display: none;">
+                <input onclick="insertCard()" type="submit" id="submit" value="Submit Card" class="baseButton" style="width: 40%; margin-top: 10px; margin-bottom: 15px; display: none;">
 
                 <script>
                     const dropdown = document.getElementById('game');
@@ -65,13 +66,13 @@
 
                     dropdown.addEventListener('change', function (event){
 
-                        if(event.target.value === 'wyr'){
+                        if(event.target.value === 'WYR'){
                             tdDiv.style.display = 'none';
                             defaultDiv.style.display = 'none';
                             wyrDiv.style.display = 'block';
                             subButton.style.display = 'block';
                         }
-                        else if(event.target.value == 'truth' || event.target.value === 'dare'){
+                        else if(event.target.value == 'TRU' || event.target.value === 'DAR'){
                             wyrDiv.style.display = 'none';
                             defaultDiv.style.display = 'none';
                             tdDiv.style.display = 'block';
@@ -86,8 +87,50 @@
                     });
                 </script>
 
+                <script>
+                    async function insertCard() {
+                        if (document.getElementById('game').value == 'WYR'){
+                            const response = await fetch(`http://localhost:8080/admin/`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    "type": document.getElementById('game').value,
+                                    "theme": document.getElementById('genre').value,
+                                    "text1": document.getElementById('text1').value,
+                                    "text2": document.getElementById('text2').value
+                                })
+                            })
+    
+                            if (response.ok){
+                                alert("Successfully created card!")
+                            } else {
+                                alert("Card creation failed.")
+                            }
+                        } else {
+                            const response = await fetch(`http://localhost:8080/admin/`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    "type": document.getElementById('game').value,
+                                    "theme": document.getElementById('genre').value,
+                                    "text1": document.getElementById('text').value,
+                                    "text2": null
+                                })
+                            })
+    
+                            if (response.ok){
+                                alert("Successfully created card!")
+                            } else {
+                                alert("Card creation failed.")
+                            }
+                        }
+                    }
+                </script>
             </form>
         </div>
-
     </body>
 </html>

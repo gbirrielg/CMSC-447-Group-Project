@@ -15,20 +15,22 @@
         <div style="width: 30%; margin: 0 auto; align-content:center; margin-bottom: 10px;">
             <form>
                 <input type="text" placeholder="Enter Card ID to Delete" name="cardID" id="cardID" style="font-size: 20px; padding: 5px 5px;">
-                <button style="font-size: 20px; padding: 5px 5px;">Delete</button>
+                <button onclick="deleteCard()" style="font-size: 20px; padding: 5px 5px;">Delete</button>
             </form>
         </div>
 
         <h1 style="margin-top: 5px; margin-bottom: 8px;">Find the Card Below</h1>
 
         <div id="table">
-            <table style="margin: 0 auto;background-color: black;">
+            <table id="cardTable" style="margin: 0 auto;background-color: black;">
+
                 <tr style="background-color: grey;text-align : center;">
                     <th width="200">ID</th>
                     <th width="200">Card Type</th>
                     <th width="200">Text</th>
                     <th width="200">Text 2</th>
                 </tr>
+
                 <tr style="background-color: lightgrey; text-align:center;">
                     <td>001</td>
                     <td>Truth</td>
@@ -105,6 +107,44 @@
             <button style="font-size: 20px; padding: 10px 10px;">Prev</button>
             <button style="font-size: 20px; padding: 10px 10px;">Next</button>
         </div>
+
+        <script>
+            async function fetchCards() {
+                const response = await fetch(`http://localhost:8080/cards/`);
+                const cards = await response.json();
+                return cards;
+            }
+
+            async function displayCards() {
+                const cards = await fetchCards();
+                const table = document.getElementById('cardTable');
+                const rows = table.getElementsByTagName('tr');
+
+                cards.forEach((card, index) => {
+                    const cells = rows[index + 1].getElementsByTagName('td');
+                    cells[0].textContent = card.card_id;
+                    cells[1].textContent = card.type;
+                    cells[2].textContent = card.option_1;
+                    cells[3].textContent = card.option_2;
+                });
+            }
+            displayCards();
+        </script>
+
+        <script>
+            async function deleteCard() {
+                const card = document.getElementById('cardID').value
+                const response = await fetch(`http://localhost:8080/cards/${card}`, {
+                    method: 'DELETE'
+                })
+
+                if (response.ok){
+                    alert(`Successfully deleted card with ID: ${card}`)
+                } else {
+                    alert(`A card with ID: ${card} could not be found.`)
+                }
+            }
+        </script>
 
     </body>
 
