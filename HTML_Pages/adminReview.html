@@ -103,14 +103,16 @@
                             "text2": opt2
                         })
                     })
+
+                    await denySubmission();
+
                     if (response.ok){
                         alert("Successfully created card!")
                     } else {
                         alert("Card creation failed.")
                     }
 
-                    await denySubmission();
-                    window.location.href = 'adminReview.html'
+                    location.reload();
                 }
             </script>
         </div>

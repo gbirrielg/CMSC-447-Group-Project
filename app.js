@@ -1,5 +1,5 @@
 import express from 'express'
-import { getUser, getUsers, checkUserLogin, getRandSubmission, deleteSubmission, getTypeCards, getThemeCards, getAnyCards, deleteCard, createUser, createCardAdmin, createCardUser } from './database.js'
+import { getUser, getUsers, checkUserLogin, getRandSubmission, deleteSubmission, getCardById, getTypeCards, getThemeCards, getAnyCards, deleteCard, createUser, createCardAdmin, createCardUser } from './database.js'
 import cors from 'cors'
 
 const app = express()
@@ -78,6 +78,16 @@ app.delete("/cards/:id", async (req, res) => {
     }
 })
 
+app.patch("/cards/:id", async (req, res) => {
+    const arg = req.params.id
+    const card = await getCardById(Number(arg))
+    if (card){
+        res.status(201).send(card)
+    } else {
+        res.status(404).send(result)
+    }
+})
+
 app.post("/users", async (req, res) => {
     const { username, password } = req.body
     const user = await createUser(username, password)
@@ -90,8 +100,8 @@ app.post("/users", async (req, res) => {
 
 
 app.post("/users/cards", async (req, res) => {
-    const { type, theme, text1, text2 } = req.body
-    const card = await createCardUser(type, theme, text1, text2)
+    const { username, type, theme, text1, text2 } = req.body
+    const card = await createCardUser(username, type, theme, text1, text2)
     if (card){
         res.status(200).send(card)
     } else {

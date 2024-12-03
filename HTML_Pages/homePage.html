@@ -16,8 +16,23 @@
 
     <body>
         <div class="home-smallBtns">
-            <button class="baseButton smallButton"><a href="loginPage.html" class="homeA">Login</a></button>
-            <button class="baseButton smallButton"><a href="###" class="homeA">Submit Card</a></button>
+            <button id="loginButton" class="baseButton smallButton"><a href="loginPage.html" class="homeA">Login</a></button>
+            <button id="logoutButton" class="baseButton smallButton" onclick="logout()">Logout</button>
+            <script>
+                const usr = sessionStorage.getItem('username');
+                if (usr){
+                    document.getElementById('loginButton').style.display = 'none';
+                } else {
+                    document.getElementById('logoutButton').style.display = 'none';
+                }
+
+                async function logout(){
+                    sessionStorage.removeItem("username");
+                    window.location.href = 'homePage.html';
+                }
+            </script>
+
+            <button class="baseButton smallButton"><a href="cardSubmissionPage.html" class="homeA">Submit Card</a></button>
         </div>
 
         <h1>NoPreference Online Games</h1>

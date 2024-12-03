@@ -47,14 +47,21 @@ export async function deleteSubmission(){
 }
 
 
-// export async function getCardById(id){
-//     const [result] = await pool.query(`
-//         SELECT *
-//         FROM cards
-//         WHERE card_id = ?
-//         `, [id])
-//     return result[0];
-// }
+export async function getCardById(id){
+    try{
+        const [result] = await pool.query(`
+            SELECT *
+            FROM cards
+            WHERE card_id = ?
+            `, [id])
+        console.log(`Sucessfully retrieved card #${id}.`)
+        return result[0];
+    } catch {
+        console.log(`Card #${id} does not exist or could not be returned.`)
+        return null;
+    }
+    
+}
 
 
 export async function getTypeCards(type){
@@ -157,16 +164,17 @@ export async function createCardAdmin(type, theme, text1, text2){
 }
 
 
-export async function createCardUser(type, theme, text1, text2){
+export async function createCardUser(username, type, theme, text1, text2){
     try{
         const insertion = await pool.query(`
             INSERT INTO submissions (username, type, theme, option_1, option_2)
-            VALUES ("testuser", ?, ?, ?, ?)
-            `, [type, theme, text1, text2] )
+            VALUES (?, ?, ?, ?, ?)
+            `, [username ,type, theme, text1, text2] )
         console.log("Successfully inserted user-suggested card.")
         return insertion;
-    } catch {
+    } catch (err){
         console.log("Unsuccessful card suggestion entry.")
+        console.log(err)
         return null;
     }
 }

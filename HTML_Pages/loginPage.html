@@ -41,7 +41,12 @@
                         const user = data[0];
 
                         if (user) {
-                            window.location.href = '/partyGame/HTML_Pages/homePage.html';
+                            sessionStorage.setItem("username", user.username)
+                            if (user.is_admin){
+                                window.location.href = '/partyGame/HTML_Pages/adminHome.html'
+                            } else {
+                                window.location.href = '/partyGame/HTML_Pages/homePage.html';
+                            }
                         } else {
                             alert("Incorrect username or password.");
                         }

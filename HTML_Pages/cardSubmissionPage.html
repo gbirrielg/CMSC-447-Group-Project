@@ -92,6 +92,14 @@
 
                 <script>
                 async function insertSubmission() {
+                    const isLoggedIn = sessionStorage.getItem("username");
+                    let username;
+                    if (isLoggedIn){
+                        username = sessionStorage.getItem("username")
+                    } else {
+                        username = "testuser";
+                    }
+
                     if (document.getElementById('game'). value == 'WYR'){
                         const response = await fetch(`http://localhost:8080/users/cards/`, {
                             method: 'POST',
@@ -99,6 +107,7 @@
                                 'Content-Type': 'application/json'
                             },
                             body: JSON.stringify({
+                                "username": username,
                                 "type": document.getElementById('game').value,
                                 "theme": document.getElementById('genre').value,
                                 "text1": document.getElementById('text1').value,
@@ -118,6 +127,7 @@
                                 'Content-Type': 'application/json'
                             },
                             body: JSON.stringify({
+                                "username": username,
                                 "type": document.getElementById('game').value,
                                 "theme": document.getElementById('genre').value,
                                 "text1": document.getElementById('text').value,
