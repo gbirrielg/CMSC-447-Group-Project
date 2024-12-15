@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="cardPage.css">
+        <title>Update Card</title>
+    </head>
+
+    <body>
+        <div class="buttonGroup">
+            <button class="smallButton baseButton"><a href="adminHome.html" class="blankText">Home</a></button>
+        </div>
+
+        <h1 style="text-align: center;font-size: 50px;">Update a Card</h1>
+
+        <div class="card">
+            <p style="opacity: 70%;">Edit the fields below to update a card.</p>
+
+            <!-- action="adminThanks.html"-->
+            <form>
+                <label style="font-size: 20px;">Select the Card Type:</label>
+                <br>
+                <select id="game" name="game" required class="selector">
+                    <option value="default">Select the Card Type</option>
+                    <option value="TRU">Truth</option>
+                    <option value="DAR">Dare</option>
+                    <option value="WYR">Would You Rather</option>
+                </select>
+                
+                <br>
+
+                <label style="font-size: 20px;">Genre</label>
+                <br>
+                <select id="genre" name="genre" required class="selector">
+                    <option value="Basic">Basic</option>
+                    <option value="Embarassing">Embarassing</option>
+                    <option value="Personal">Personal</option>
+                    <option value="Food">Food</option>
+                </select>
+
+                <div id="td" style="display: none;">
+                    <label style="font-size: 20px;">Card Text</label><br>
+                    <textarea name="cardText" id="text" rows="5" cols="50"></textarea>
+                </div>
+
+                <div id="wyr" style="display: none;">
+                    <label style="font-size: 20px;">Option 1</label><br>
+                    <textarea name="opt1" id="text1" rows="5" cols="50" style="margin-bottom: 10px;"></textarea><br>
+                    <label style="font-size: 20px;">Option 2</label><br>
+                    <textarea name="opt2" id="text2" rows="5" cols="50"></textarea>
+                </div>
+
+                <div id="default" style="display: block;">
+                    <p style="color: red;font-size: 20px;"><b>Please select a card type.</b></p>
+                </div>
+
+                <!-- I don't know how we're going to get the username as well in the submission. -->
+
+                <input onclick="insertCard()" type="submit" id="submit" value="Submit Card" class="baseButton" style="width: 40%; margin-top: 10px; margin-bottom: 15px; display: none;">
+
+                <script>
+                    const dropdown = document.getElementById('game');
+                    const tdDiv = document.getElementById("td");
+                    const wyrDiv = document.getElementById("wyr");
+                    const defaultDiv = document.getElementById("default");
+                    const subButton = document.getElementById("submit");
+
+                    dropdown.addEventListener('change', function (event){
+
+                        if(event.target.value === 'WYR'){
+                            tdDiv.style.display = 'none';
+                            defaultDiv.style.display = 'none';
+                            wyrDiv.style.display = 'block';
+                            subButton.style.display = 'block';
+                        }
+                        else if(event.target.value == 'TRU' || event.target.value === 'DAR'){
+                            wyrDiv.style.display = 'none';
+                            defaultDiv.style.display = 'none';
+                            tdDiv.style.display = 'block';
+                            subButton.style.display = 'block';
+                        }
+                        else{
+                            wyrDiv.style.display = 'none';
+                            tdDiv.style.display = 'none';
+                            subButton.style.display = 'none';
+                            defaultDiv.style.display = 'block';
+                        }
+                    });
+                </script>
+
+                <script>
+                    async function deleteCard(cardid) {
+                    const response = await fetch(`http://localhost:8080/cards/${cardid}`, {
+                        method: 'DELETE'
+                    })
+
+                    if (response.ok){
+                        alert(`Successfully deleted card with ID: ${cardid}`)
+                    } else {
+                        alert(`A card with ID: ${cardid} could not be found.`)
+                    }
+                    }
+                </script>
+
+                <script>
+                    async function retrieveCard() {
+                        const cardid = sessionStorage.getItem('cardID');
+                        const response = await fetch(`http://localhost:8080/cards/${cardid}`, {
+                        method: 'PATCH'
+                        })
+                        if (!response.ok){
+                            alert(`A card by the ID: ${cardid} does not exist.`)
+                            return;
+                        };
+                        card = await response.json();
+
+                        gameType = document.getElementById('game');
+                        genre = document.getElementById('genre');
+                        text = document.getElementById('text')
+                        text1 = document.getElementById('text1');
+                        text2 = document.getElementById('text2');
+
+                        gameType.value = card.type;
+                        genre.value = card.theme;
+                        text.value = card.option_1;
+                        text1.value = card.option_1;
+                        text2.value = card.option_2 || "N/A";
+                    }
+                    retrieveCard();
+
+                    async function insertCard() {
+                        const cardid = sessionStorage.getItem('cardID');
+                        const response = await fetch(`http://localhost:8080/cards/${cardid}`, {
+                        method: 'PATCH'
+                        })
+                        if (!response.ok){
+                            alert(`A card by the ID: ${cardid} does not exist.`)
+                            return;
+                        };
+                        card = await response.json();
+
+
+                        if (document.getElementById('game').value == 'WYR'){
+                            const response = await fetch(`http://localhost:8080/admin/`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    "username": sessionStorage.getItem('username'),
+                                    "type": document.getElementById('game').value,
+                                    "theme": document.getElementById('genre').value,
+                                    "text1": document.getElementById('text1').value,
+                                    "text2": document.getElementById('text2').value
+                                })
+                            })
+    
+                            if (response.ok){
+                                alert("Successfully created card!")
+                            } else {
+                                alert("Card creation failed.")
+                            }
+                        } else {
+                            const response = await fetch(`http://localhost:8080/admin/`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    "username": card.username,
+                                    "type": document.getElementById('game').value,
+                                    "theme": document.getElementById('genre').value,
+                                    "text1": document.getElementById('text').value,
+                                    "text2": null
+                                })
+                            })
+    
+                            if (response.ok){
+                                alert("Successfully created card!")
+                            } else {
+                                alert("Card creation failed.")
+                            }
+                        }
+                        deleteCard(card.card_id);
+                    }
+                </script>
+
+                <script>
+                    async function deleteCard() {
+                    const card = document.getElementById('cardID').value
+                    const response = await fetch(`http://localhost:8080/cards/${card}`, {
+                        method: 'DELETE'
+                    })
+
+                    if (response.ok){
+                        alert(`Successfully deleted card with ID: ${card}`)
+                    } else {
+                        alert(`A card with ID: ${card} could not be found.`)
+                    }
+                    }
+                </script>
+                
+            </form>
+        </div>
+    </body>
+</html>

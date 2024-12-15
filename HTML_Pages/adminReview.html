@@ -45,26 +45,32 @@
             </div>
 
             <div class="mainButtons">
-                <button class="baseButton largeButton" style="margin-right: 10px;" onclick="approveSubmission()"><a href="adminReview.html" class="blankText">Approve</a></button>
-                <button class="baseButton largeButton" onclick="denySubmission()"><a href="adminReview.html" class="blankText">Deny</a></button>
+                <button class="baseButton largeButton" style="margin-right: 10px;" onclick="approveSubmission()">Approve</button>
+                <button class="baseButton largeButton" onclick="denySubmission()">Deny</button>
             </div>
 
             <script>
                 async function getSubmission(){
-                   const response = await fetch(`http://localhost:8080/submissions/`);
-                   const data = await response.json()
-                   
-                   document.getElementById('cardid').textContent = `${data.submit_id}`
-                   document.getElementById('username').textContent = `${data.username}`
-                   document.getElementById('type').textContent = `${data.type}`
-                   document.getElementById('genre').textContent = `${data.theme}`
-                   document.getElementById('option1').textContent = `${data.option_1}`
-                   if (data.option_2){
-                    document.getElementById('option2').textContent = `${data.option_2}`
-                   } else {
-                    document.getElementById('option2').textContent = `N/A`
-                   }
-                   return data;
+                   try {
+                    const response = await fetch(`http://localhost:8080/submissions/`);
+                    const data = await response.json();
+
+                    document.getElementById('cardid').textContent = `${data.submit_id}`
+                    document.getElementById('username').textContent = `${data.username}`
+                    document.getElementById('type').textContent = `${data.type}`
+                    document.getElementById('genre').textContent = `${data.theme}`
+                    document.getElementById('option1').textContent = `${data.option_1}`
+                    if (data.option_2){
+                     document.getElementById('option2').textContent = `${data.option_2}`
+                    } else {
+                     document.getElementById('option2').textContent = `N/A`
+                    }
+                    return data;
+                    } catch {
+                     document.getElementById('submission').style.display = 'None';
+                     document.getElementById('empty').style.display = 'Block';
+                     return;
+                    }
                 }
 
                 async function getCard(){
@@ -78,45 +84,58 @@
 
             <script>
                 async function denySubmission(){
-                    const response = await fetch(`http://localhost:8080/submissions/`, {
+                    try{
+                        const response = await fetch(`http://localhost:8080/submissions/`, {
                         method: 'DELETE'
+                    });
+
+                    if (!response.ok) {
+                        const errorMessage = await response.text();
+                        throw new Error(`Failed to delete submission: ${errorMessage}`);
                     }
-                    )
+
+                    } catch (error){
+                        console.error("Error during submission denial: ", error);
+                    }
+                    
+                    location.reload();
                 }
 
                 async function approveSubmission(){
-                    const card = await getCard();
-                    let opt2 = null;
-                    if (card.option_2){
-                        opt2 = card.option_2;
-                    }
+                    try{
+                        const card = await getCard();
+                        if (!card){ throw new Error("Failed to retrieve card.");}
 
-                    const response = await fetch('http://localhost:8080/admin/', {
+                        let opt2 = card.option_2 || null;
+
+                        const response = await fetch('http://localhost:8080/admin/', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
+                            "username": card.username,
                             "type": card.type,
                             "theme": card.theme,
                             "text1": card.option_1,
                             "text2": opt2
                         })
-                    })
+                    });
 
-                    await denySubmission();
-
-                    if (response.ok){
-                        alert("Successfully created card!")
-                    } else {
-                        alert("Card creation failed.")
+                    if (!response.ok) {
+                        const errorMessage = await response.text();
+                        throw new Error (`Card creation failed: ${errorMessage}`);
                     }
 
+                    await denySubmission();
                     location.reload();
+
+                    } catch (error) {
+                        console.error("Error during submission approval:", error);
+                        alert(`An error occured: ${error.message}`);
+                    }
                 }
             </script>
         </div>
-
     </body>
-
 </html>

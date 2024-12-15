@@ -184,34 +184,21 @@
 
         <script>
             async function updateSetup(){
-                const updateDiv = document.getElementById('updateDiv');
-                const cardID = document.getElementById('cardID2');
-                const username = document.getElementById('creatorUsername');
-                const typeSelect = document.getElementById('typeSelect');
-                const text1Container = document.getElementById('text1Container');
-                const text2Container = document.getElementById('text2Container');
-
-                const cardid = document.getElementById("cardID").value
-                const response = await fetch(`http://localhost:8080/cards/${cardid}`, {
+                try{
+                    const cardid = document.getElementById("cardID").value
+                    const response = await fetch(`http://localhost:8080/cards/${cardid}`, {
                     method: 'PATCH'
-                })
-                const card = await response.json();
+                    })
+                    if (!response.ok){
+                        alert(`A card by the ID: ${cardid} does not exist.`)
+                        return;
+                    };
 
-                if (response.ok){
-                    cardID.value = card.username;
-                    username = card.username;
-                    typeSelect.value = card.card_id;
-                    text1Container.value = card.option_1;
-
-                    if (typeSelect.value == 'DAR' || typeSelect.value == 'TRU'){
-                        text2Container.classList.add('hidden');
-                    } else {
-                        text2Container.value = card.option_2;
-                        text2Container.classList.remove('hidden')
-                    }
-                    updateDiv.style.display = 'block';
-                } else {
-                    alert(`A card by the ID: ${cardid} does not exist.`)
+                    card = await response.json();
+                    sessionStorage.setItem("cardID", card.card_id);
+                    window.location.href = 'adminUpdateCard.html';
+                } catch (error){
+                    console.error("Error in updateSetup: ", error);
                 }
             }
 

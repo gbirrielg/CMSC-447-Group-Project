@@ -28,7 +28,9 @@
 
                 <!-- <input type="submit" value="Sign Up" style="padding: 10px;width: 100%;margin-top: 15px;margin-bottom: 20px;" class="baseButton"> -->
                 <button style="padding: 10px;width: 100%;margin-top: 15px;margin-bottom: 20px;" type="button" class="baseButton" onclick="insertUser()">Sign Up</button>
-                
+                <a href="loginPage.html" style="color: black;">Login</a><br>
+                <a href="homePage.html" style="color: black;">Continue as Guest</a>
+
                 <script>
                     async function insertUser() {
                         const response = await fetch(`http://localhost:8080/users/`, {
@@ -44,6 +46,7 @@
 
                         if (response.ok){
                             alert("Successfully created account!")
+                            window.location.href = "loginPage.html"
                         } else {
                             alert("Registration failed. A user by this username already exists!")
                         }

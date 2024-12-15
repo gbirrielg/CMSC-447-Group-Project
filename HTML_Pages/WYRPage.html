@@ -25,8 +25,8 @@
             </div>
 
             <div class="feedback">
-                <button><p style="color: green;">&#8593</p></button>
-                <button><p style="color: red">&#8595</p></button>
+                <button onclick="voteCard(document.getElementById('cardid').textContent, 'like')"><p style="color: green;">&#8593</p></button>
+                <button onclick="voteCard(document.getElementById('cardid').textContent, 'dislike')"><p style="color: red">&#8595</p></button>
                 <p id="upvote"style="font-size: 30px;">123</p>
                 <p id="downvote" style="font-size: 30px;">456</p>
             </div>
@@ -59,6 +59,33 @@
                 document.addEventListener('DOMContentLoaded', () => {
                     fetchCards('WYR');
                 })
+            </script>
+
+            <script>
+                async function voteCard(cardID, voteType) {
+                    try {
+                        const response = await fetch(`http://localhost:8080/cards/${(cardID)}/vote`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({voteType})
+                        });
+            
+                        upvoteButton = document.getElementById('upvote');
+                        downvoteButton = document.getElementById('downvote');
+                        if (voteType == 'like'){
+                            upvoteButton.textContent = Number(upvoteButton.textContent) + 1;
+                        } else {
+                            downvoteButton.textContent = Number(downvoteButton.textContent) + 1;
+                        }
+
+                        console.log(`Vote updated successfully!`)
+                    } catch (error) {
+                        console.error("Error updating vote:", error);
+                        alert(`Failed to update vote: ${error}`)
+                    }
+                }
             </script>
         </div>
 

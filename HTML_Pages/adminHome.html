@@ -7,8 +7,15 @@
 </head>
 
 <body>
+    <button onclick="logout()" class="smallButton baseButton"><a href="homePage.html" class="blankText">Logout</a></button>
     <h1 style="text-align: center; margin-top: 60px; font-size: 60px;">Admin Card Controls</h1>
 </body>
+
+<script>
+    async function logout(){
+        sessionStorage.removeItem("username");
+    }
+</script>
 
 <div class="grouping">
     <div class="card box">

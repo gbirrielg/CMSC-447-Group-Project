@@ -39,11 +39,17 @@ export async function getRandSubmission(){
 
 
 export async function deleteSubmission(){
-    const [result] = await pool.query(`
-        DELETE FROM submissions
-        ORDER BY submit_id ASC
-        LIMIT 1`)
-    return result;
+    try {
+        const [result] = await pool.query(`
+            DELETE FROM submissions
+            ORDER BY submit_id ASC
+            LIMIT 1`)
+        console.log(`Successfully denied submission.`)
+        return result;
+    } catch {
+        console.log(`Failed to deny submission.`)
+        return null;
+    }
 }
 
 
@@ -60,7 +66,6 @@ export async function getCardById(id){
         console.log(`Card #${id} does not exist or could not be returned.`)
         return null;
     }
-    
 }
 
 
@@ -124,6 +129,36 @@ export async function deleteCard(id){
 }
 
 
+export async function updateLikes(id, voteType){
+    try{
+        let result;
+        if (voteType == 'like'){
+            result = await pool.query(`
+                UPDATE cards
+                SET upvotes = upvotes + 1
+                WHERE card_id = ?
+                `, [id]);
+        } else {
+            result = await pool.query(`
+                UPDATE cards
+                SET downvotes = downvotes + 1
+                WHERE card_id = ?
+                `, [id]);
+        }
+
+        if (result){
+            console.log("Vote updated successfully.")
+        } else {
+            console.log("Card could not be found or rating could not be updated.")
+        }
+        return result;
+    } catch (error){
+        console.error("Error updating vote: ", error)
+        return null;
+    }
+}
+
+
 export async function checkUserLogin(username, password){
     const [result] = await pool.query(`
         SELECT *
@@ -149,16 +184,16 @@ export async function createUser(username, password){
 }
     
 
-export async function createCardAdmin(type, theme, text1, text2){
+export async function createCardAdmin(username, type, theme, text1, text2){
     try{
         const insertion = await pool.query(`
             INSERT INTO cards (username, type, theme, option_1, option_2, date_time)
-            VALUES ("admin", ?, ?, ?, ?, CURDATE())
-            `, [type, theme, text1, text2] )
+            VALUES (?, ?, ?, ?, ?, CURDATE())
+            `, [username, type, theme, text1, text2] )
         console.log("Successfully inserted admin-created card.")
         return insertion;
     } catch (error){
-        console.log("Unsuccessful card entry.")
+        console.log(`Unsuccessful card entry. Error: ${error}`)
         return null;
     }
 }
@@ -178,37 +213,3 @@ export async function createCardUser(username, type, theme, text1, text2){
         return null;
     }
 }
-
-    // except DatabaseError as e:
-    // const result = await pool.query(`
-    //     SELECT * FROM users
-    //     WHERE username = ?
-    //     `, [username])
-    
-    // if (result.length == 0){
-    //     return result
-    // }
-
-    // const insertion = await pool.query(`
-    //     INSERT INTO users (username, password)
-    //     VALUES (?, ?)
-    //     `, [username, password])
-    // return insertion
-
-
-
-// const clients = await getUsers()
-// console.log(clients)
-// const specific = await getUser('admin')
-// console.log(specific)
-// const cards = await getSpecificCards('WYR', 'Basic', 5);
-// console.log(cards)
-
-
-// pool.end((err) => {
-//     if (err) {
-//         console.error('Error closing connection: ', err)
-//     } else {
-//         console.log('Connection closed successfully.')
-//     }
-// })

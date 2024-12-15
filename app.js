@@ -1,5 +1,5 @@
 import express from 'express'
-import { getUser, getUsers, checkUserLogin, getRandSubmission, deleteSubmission, getCardById, getTypeCards, getThemeCards, getAnyCards, deleteCard, createUser, createCardAdmin, createCardUser } from './database.js'
+import { getUser, getUsers, checkUserLogin, getRandSubmission, deleteSubmission, getCardById, getTypeCards, getThemeCards, getAnyCards, deleteCard, updateLikes, createUser, createCardAdmin, createCardUser } from './database.js'
 import cors from 'cors'
 
 const app = express()
@@ -35,7 +35,11 @@ app.get("/submissions", async (req, res) => {
 
 app.delete("/submissions", async (req, res) => {
     const response = await deleteSubmission()
-    res.send(response)
+    if (response){
+        res.status(201).send(response);
+    } else {
+        res.status(404).send(response);
+    }
 })
 
 
@@ -84,7 +88,19 @@ app.patch("/cards/:id", async (req, res) => {
     if (card){
         res.status(201).send(card)
     } else {
-        res.status(404).send(result)
+        res.status(404).send(card)
+    }
+})
+
+app.patch("/cards/:id/vote", async (req, res) => {
+    const cardID = req.params.id;
+    const { voteType } = req.body;
+
+    const result = await updateLikes(cardID, voteType);
+    if (result){
+        res.status(200).send("Vote successfully counted!")
+    } else {
+        res.status(500).send("An error has occured!")
     }
 })
 
@@ -111,19 +127,14 @@ app.post("/users/cards", async (req, res) => {
 
 
 app.post("/admin", async (req, res) => {
-    const { type, theme, text1, text2 } = req.body
-    const card = await createCardAdmin(type, theme, text1, text2)
+    const { username, type, theme, text1, text2 } = req.body
+    const card = await createCardAdmin(username, type, theme, text1, text2)
     if (card){
         res.status(201).send(card)
     } else {
         res.status(500).send(card)
     }
 })
-
-// app.get("/cards/:type/:theme", async (req, res) => {
-//     const type = req.params.type
-//     const theme = req.params.theme
-// })
 
 
 // Catching errors

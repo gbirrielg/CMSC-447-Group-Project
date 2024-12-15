@@ -96,6 +96,7 @@
                                     'Content-Type': 'application/json'
                                 },
                                 body: JSON.stringify({
+                                    "username": sessionStorage.getItem('username'),
                                     "type": document.getElementById('game').value,
                                     "theme": document.getElementById('genre').value,
                                     "text1": document.getElementById('text1').value,
@@ -115,6 +116,7 @@
                                     'Content-Type': 'application/json'
                                 },
                                 body: JSON.stringify({
+                                    "username": sessionStorage.getItem('username'),
                                     "type": document.getElementById('game').value,
                                     "theme": document.getElementById('genre').value,
                                     "text1": document.getElementById('text').value,
