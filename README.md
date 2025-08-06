@@ -14,3 +14,8 @@ This project's backend has been written with Node.js and sets up an Express serv
 - Have your MySQL server running.
 - Run "node app.js" in your terminal to start Express server.
 - Run the website using your webpage hosting tool.
+
+## Credits
+- Giovanni Birriel: Backend (JS, Node.js, MySQL, HTML)
+- Robert Adams: Frontend (HTML, CSS)
+- Justin Filigenzi: UI Design (Figma, CSS)
